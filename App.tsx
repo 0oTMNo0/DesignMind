@@ -3,10 +3,10 @@ import Animated, {
   withTiming,
   useAnimatedStyle,
   Easing,
-} from "react-native-reanimated";
-import { View, Button } from "react-native";
+} from 'react-native-reanimated';
+import { View, Button } from 'react-native';
 
-export default function AnimatedStyleUpdateExample(props) {
+export default function AnimatedStyleUpdateExample(props: any) {
   const randomWidth = useSharedValue(10);
 
   const config = {
@@ -24,14 +24,14 @@ export default function AnimatedStyleUpdateExample(props) {
     <View
       style={{
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
       }}
     >
       <Animated.View
         style={[
-          { width: 100, height: 80, backgroundColor: "black", margin: 30 },
+          { width: 100, height: 80, backgroundColor: 'black', margin: 30 },
           style,
         ]}
       />
