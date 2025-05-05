@@ -7,24 +7,14 @@ export interface ThemeType {
   colors: {
     primary: string;
     secondary: string;
-    background: string;
-    background_modal: string;
-    input: string;
-    card: string;
-    border: string;
-    disable_outer: string;
-    disable_inner: string;
+    background1: string;
+    background2: string;
     text1: string;
     text2: string;
-    text3: string;
-    text4: string;
     error: string;
     confirm: string;
     warning: string;
     link: string;
-    input2: string;
-    primaryUsdt: string;
-    secondaryUsdt: string;
   };
 }
 
