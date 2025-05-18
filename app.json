@@ -1,7 +1,26 @@
 {
   "name": "DesignMind",
   "slug": "DesignMind",
+  "schema": "designmind", 
   "plugins": [
     "expo-font"
-  ]
+  ],
+  "extra": {
+    "eas": {
+      "projectId": "92cc0d65-33ed-4891-985e-f1fa7635681a"
+    }
+  },
+  "expo": {
+    "ios": {
+      "bundleIdentifier": "designmind",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "241741b8-a0a9-48f3-b0d7-f1d1969d3ab7"
+      }
+    }
+  }
 }

@@ -2,7 +2,6 @@ import { Slot } from 'expo-router';
 import React from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
-import { SafeAreaView } from 'react-native';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 
 SplashScreen.preventAutoHideAsync();
@@ -30,11 +29,16 @@ export default function RootLayout() {
     return null;
   }
 
+  // return (
+  //   <ThemeProvider>
+  //     <SafeAreaView>
+  //       <Slot />
+  //     </SafeAreaView>
+  //   </ThemeProvider>
+  // );
   return (
     <ThemeProvider>
-      <SafeAreaView>
-        <Slot />
-      </SafeAreaView>
+      <Slot />
     </ThemeProvider>
   );
 }
