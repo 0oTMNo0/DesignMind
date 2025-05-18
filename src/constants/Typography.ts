@@ -17,9 +17,15 @@ export const typography = {
     '9xl': 128,
   },
   fontWeight: {
-    black: 'IRANSansMobile_Black',
-    bold: 'IRANSansMobile_Bold',
-    medium: 'IRANSansMobile_Medium',
+    regular: 'Poppins-Regular',
+    medium: 'Poppins-Medium',
+    semibold: 'Poppins-SemiBold',
+    bold: 'Poppins-Bold',
+    light: 'Poppins-Light',
+    extralight: 'Poppins-ExtraLight',
+    thin: 'Poppins-Thin',
+    black: 'Poppins-Black',
+    extrabold: 'Poppins-ExtraBold',
   },
 };
 
