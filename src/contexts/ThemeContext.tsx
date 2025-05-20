@@ -1,6 +1,5 @@
 import React from 'react';
 import { darkTheme, lightTheme } from '@/constants/Color';
-export const ThemeContext = React.createContext<any | null>(null);
 
 export interface ThemeType {
   colorScheme: 'dark' | 'light';
@@ -17,6 +16,13 @@ export interface ThemeType {
     link: string;
   };
 }
+
+export interface ThemeContextType {
+  selectedTheme: ThemeType;
+  setTheme: (theme: ThemeType) => void;
+}
+
+export const ThemeContext = React.createContext<ThemeContextType | null>(null);
 
 export const ThemeProvider = (props: any) => {
   const [selectedTheme, setTheme] = React.useState<ThemeType>(darkTheme);

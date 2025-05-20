@@ -1,3 +1,3 @@
 // import ... from ./
-
-export {};
+import IconAI from './IconAI';
+export { IconAI };

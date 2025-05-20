@@ -20,6 +20,7 @@
 - npm run android
 - npm run ios
 - npm run web
+- REACT_NATIVE_PACKAGER_HOSTNAME=10.83.129.36 npx expo start
 
 ## 📝 Notes
 

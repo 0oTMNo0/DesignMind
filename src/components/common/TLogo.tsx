@@ -1,12 +1,24 @@
 //import liraries
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { IconAI } from '@/assets/icons';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import TText from './TText';
 
 // create a component
 const TLogo = () => {
   return (
     <View style={styles.container}>
-      <Text>TLogo</Text>
+      <TText fontsize="2xl" fontweight="black">
+        DM
+      </TText>
+      <View
+        style={{
+          position: 'relative',
+          top: -15,
+        }}
+      >
+        <IconAI size={24} />
+      </View>
     </View>
   );
 };
@@ -14,10 +26,8 @@ const TLogo = () => {
 // define your styles
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#2c3e50',
+    flexDirection: 'row',
+    paddingTop: 10,
   },
 });
 

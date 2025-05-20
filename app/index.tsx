@@ -1,4 +1,6 @@
 // app/test.tsx
+import TLogo from '@/components/common/TLogo';
+import TLogoGradient from '@/components/common/TLogoGradient';
 import TText from '@/components/common/TText';
 // import { ThemeContext } from '@/contexts/ThemeContext';
 import React from 'react';
@@ -14,6 +16,16 @@ export default function TestRoute() {
       <TText fontsize="md" fontweight="regular" color="text1">
         This is a test text
       </TText>
+      <TLogo />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <TLogoGradient />
+      </View>
     </SafeAreaView>
   );
 }
