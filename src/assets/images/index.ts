@@ -1,0 +1,16 @@
+export default {
+  img1: require('./img1.png'),
+  img2: require('./img2.png'),
+  img3: require('./img3.png'),
+  img4: require('./img4.png'),
+  img5: require('./img5.png'),
+  img6: require('./img6.png'),
+  img7: require('./img7.png'),
+  img8: require('./img8.png'),
+  img9: require('./img9.png'),
+  img10: require('./img10.png'),
+  img11: require('./img11.png'),
+  img12: require('./img12.png'),
+  img13: require('./img13.png'),
+  img14: require('./img14.png'),
+};

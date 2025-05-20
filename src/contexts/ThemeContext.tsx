@@ -1,5 +1,5 @@
 import React from 'react';
-import { darkTheme, lightTheme } from '@/constants/Color';
+import { darkTheme } from '@/constants/Color';
 
 export interface ThemeType {
   colorScheme: 'dark' | 'light';
