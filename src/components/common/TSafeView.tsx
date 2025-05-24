@@ -3,21 +3,22 @@ import { IColorType } from '@/constants/Color';
 import { ThemeContext, ThemeContextType } from '@/contexts/ThemeContext';
 import React, { Component, ReactNode } from 'react';
 import { View, ViewProps, ViewStyle } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface ViewInterface extends React.ComponentProps<typeof View> {
   backgroundColor?: IColorType;
 }
 
-interface TViewType extends ViewProps {
+interface TSafeAreaViewType extends ViewProps {
   children: ReactNode;
   style?: ViewInterface & ViewStyle;
 }
 
 // create a component
-const TView = (props: TViewType) => {
+const TSafeAreaView = (props: TSafeAreaViewType) => {
   const { selectedTheme } = React.useContext(ThemeContext) as ThemeContextType;
   return (
-    <View
+    <SafeAreaView
       {...props}
       style={[
         props.style,
@@ -25,12 +26,15 @@ const TView = (props: TViewType) => {
           backgroundColor:
             selectedTheme.colors[props.style?.backgroundColor] ||
             selectedTheme.colors.background1,
+          height: '100%',
+          width: '100%',
+          flex: 1,
         },
       ]}
     >
       {props.children}
-    </View>
+    </SafeAreaView>
   );
 };
 
-export default TView;
+export default TSafeAreaView;

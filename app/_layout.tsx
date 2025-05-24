@@ -30,13 +30,6 @@ export default function RootLayout() {
     return null;
   }
 
-  // return (
-  //   <ThemeProvider>
-  //     <SafeAreaView>
-  //       <Slot />
-  //     </SafeAreaView>
-  //   </ThemeProvider>
-  // );
   return (
     <GestureHandlerRootView>
       <ThemeProvider>

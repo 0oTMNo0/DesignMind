@@ -8,8 +8,8 @@ import TText from './TText';
 const TLogo = () => {
   return (
     <View style={styles.container}>
-      <TText fontsize="2xl" fontweight="black">
-        DM
+      <TText fontsize="2xl" fontweight="bold">
+        DesignMind
       </TText>
       <View
         style={{

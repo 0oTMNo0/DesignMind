@@ -1,36 +1,19 @@
-// app/test.tsx
-// import TLogo from '@/components/common/TLogo';
 import TLogoGradient from '@/components/common/TLogoGradient';
-// import TText from '@/components/common/TText';
-// import { ThemeContext } from '@/contexts/ThemeContext';
 import images from '@/assets/images';
 import { Marquee } from '@/components/common/Marguee';
 import { Canvas, LinearGradient, Rect, vec } from '@shopify/react-native-skia';
 import React, { useMemo } from 'react';
-import {
-  Button,
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Line } from 'react-native-svg';
 import TText from '@/components/common/TText';
-// import { Image } from 'expo-image';
+import TButton from '@/components/common/TButton';
+import { Link } from 'expo-router';
+import TSafeAreaView from '@/components/common/TSafeView';
 
 export default function TestRoute() {
-  // const { selectedTheme } = React.useContext(ThemeContext);
-  // console.log('selectedTheme', selectedTheme.colorScheme);
   const { width, height } = Dimensions.get('window');
   return (
-    <SafeAreaView style={style.container}>
-      {/* <Text style={style.text}>Route detected1324</Text> */}
-      {/* <TText fontsize="md" fontweight="regular" color="text1">
-        This is a test text
-      </TText>
-      <TLogo /> */}
+    <TSafeAreaView>
       <AnimatedCarousel width={width} height={height} />
       <Canvas
         style={{
@@ -57,43 +40,36 @@ export default function TestRoute() {
         style={{
           zIndex: 2,
           flex: 1,
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           alignItems: 'center',
+          paddingBottom: 50,
         }}
       >
         <View
           style={{
-            transform: [{ translateX: 20 }],
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 50,
           }}
         >
-          <TLogoGradient />
+          <View
+            style={{
+              transform: [{ translateX: 20 }],
+            }}
+          >
+            <TLogoGradient />
+          </View>
+          <TText fontsize="sm" color="text1" style={{ top: -20 }}>
+            power your Design by AI
+          </TText>
         </View>
-        <TText fontsize="sm" color="text1">
-          power your Design by AI
-        </TText>
-
-        <Button
-          title="Go to Home"
-          onPress={() => {
-            // navigation.navigate('home');
-          }}
-        />
+        <Link href="/form" push asChild>
+          <TButton title="Let's Start" size="lg" />
+        </Link>
       </View>
-    </SafeAreaView>
+    </TSafeAreaView>
   );
 }
-
-const style = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'black',
-  },
-  text: {
-    fontSize: 20,
-    color: 'black',
-    fontFamily: 'Poppins-Regular',
-  },
-});
 
 const AnimatedCarousel = ({ width, height }: any) => {
   const itemSize = width * 0.25;
@@ -131,8 +107,6 @@ const AnimatedCarousel = ({ width, height }: any) => {
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        // backgroundColor: 'red',
-        // rotate: '90deg',
         transform: [{ rotate: '-15deg' }],
       }}
     >
