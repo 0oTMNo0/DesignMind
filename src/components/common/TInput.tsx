@@ -2,40 +2,48 @@
 import { IColorType } from '@/constants/Color';
 import { IFontSize, IFontWeight, typography } from '@/constants/Typography';
 import { ThemeContext, ThemeContextType } from '@/contexts/ThemeContext';
-import React from 'react';
-import { Text, TextProps, TextStyle } from 'react-native';
+import React, { Component } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInputProps,
+  TextInput,
+} from 'react-native';
 
-interface TTextProps extends TextProps {
-  children: React.ReactNode;
-  color?: IColorType;
+interface TInputType extends TextInputProps {
   fontsize?: IFontSize;
   fontweight?: IFontWeight;
-  style?: TextStyle[] | TextStyle;
+  color?: IColorType;
 }
 
-const TText = (props: TTextProps) => {
+// create a component
+const TInput = (props: TInputType) => {
   const { selectedTheme } = React.useContext(ThemeContext) as ThemeContextType;
   return (
-    <Text
+    <TextInput
       {...props}
+      placeholderTextColor={selectedTheme.colors.text2}
       style={[
         props.style,
         {
-          fontSize: props.fontsize
-            ? typography.fontSizes[props.fontsize as IFontSize]
-            : typography.fontSizes.sm,
-          fontFamily: props.fontweight
-            ? typography.fontWeight[props.fontweight]
-            : typography.fontWeight.regular,
+          backgroundColor: selectedTheme.colors.background2,
+          borderRadius: 15,
           color: props.color
             ? selectedTheme.colors[props.color as IColorType]
             : selectedTheme.colors.text1,
+          padding: 10,
+          fontSize: props.fontsize
+            ? typography.fontSizes[props.fontsize as IFontSize]
+            : typography.fontSizes.lg,
+          fontFamily: props.fontweight
+            ? typography.fontWeight[props.fontweight]
+            : typography.fontWeight.regular,
         },
       ]}
-    >
-      {props.children}
-    </Text>
+    />
   );
 };
 
-export default TText;
+//make this component available to the app
+export default TInput;

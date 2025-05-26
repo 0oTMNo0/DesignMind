@@ -23,14 +23,14 @@ interface TAccordionProps extends PropsWithChildren {
   onChange?: (open: boolean) => void;
 }
 
-const TAccordion: React.FC<TAccordionProps> = ({
+const TAccordion = ({
   title,
   textIcon,
   children,
   style,
   rightIcon,
   onChange,
-}) => {
+}: TAccordionProps) => {
   const [open, setOpen] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
 
@@ -73,7 +73,7 @@ const TAccordion: React.FC<TAccordionProps> = ({
         onPress={handleToggle}
       >
         {textIcon ? <View style={styles.iconLeft}>{textIcon}</View> : null}
-        <TText fontweight="extrabold" fontsize="lg" style={styles.title}>
+        <TText fontweight="regular" fontsize="lg" style={styles.title}>
           {title}
         </TText>
         {rightIcon === 'switch' ? (

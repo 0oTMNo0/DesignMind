@@ -1,7 +1,7 @@
 {
   "name": "DesignMind",
   "slug": "DesignMind",
-  "schema": "designmind", 
+  "schema": "designmind",
   "plugins": [
     "expo-font"
   ],
@@ -21,6 +21,9 @@
       "eas": {
         "projectId": "241741b8-a0a9-48f3-b0d7-f1d1969d3ab7"
       }
+    },
+    "android": {
+      "package": "com.taban_nbz.designmind"
     }
   }
 }

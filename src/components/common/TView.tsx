@@ -6,6 +6,7 @@ import { View, ViewProps, ViewStyle } from 'react-native';
 
 interface ViewInterface extends React.ComponentProps<typeof View> {
   backgroundColor?: IColorType;
+  borderColor?: IColorType;
 }
 
 interface TViewType extends ViewProps {
@@ -24,6 +25,9 @@ const TView = (props: TViewType) => {
         {
           backgroundColor:
             selectedTheme.colors[props.style?.backgroundColor] ||
+            selectedTheme.colors.background1,
+          borderColor:
+            selectedTheme.colors[props.style?.borderColor] ||
             selectedTheme.colors.background1,
         },
       ]}

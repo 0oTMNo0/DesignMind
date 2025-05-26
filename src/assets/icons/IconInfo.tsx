@@ -7,7 +7,6 @@ import Svg, { Path } from 'react-native-svg';
 // create a component
 const SvgComponent = (props: IconType) => {
   const { selectedTheme } = React.useContext(ThemeContext) as ThemeContextType;
-  console.log(props.color);
 
   return (
     <Svg
