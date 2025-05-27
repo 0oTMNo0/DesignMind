@@ -1,18 +1,49 @@
 //import liraries
+import { IColorType } from '@/constants/Color';
+import { ThemeContext, ThemeContextType } from '@/contexts/ThemeContext';
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacityProps } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacityProps,
+  TouchableOpacity,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
+
+interface ViewInterface extends React.ComponentProps<typeof View> {
+  backgroundColor?: IColorType;
+  borderColor?: IColorType;
+}
 
 interface TTouchableOpacityProps extends TouchableOpacityProps {
   children: React.ReactNode;
-  onPress: () => void;
+  style?: any[];
 }
 
 // create a component
-const TTouchableOpacity = () => {
+const TTouchableOpacity = (props: TTouchableOpacityProps) => {
+  const { selectedTheme } = React.useContext(ThemeContext) as ThemeContextType;
+
   return (
-    <View style={styles.container}>
-      <Text>TTouchableOpacity</Text>
-    </View>
+    <TouchableOpacity
+      {...props}
+      activeOpacity={0.7}
+      style={[
+        // ...props.style,
+        {
+          backgroundColor:
+            selectedTheme.colors[props.style?.backgroundColor] ||
+            selectedTheme.colors.background1,
+          borderColor:
+            selectedTheme.colors[props.style?.borderColor] ||
+            selectedTheme.colors.background1,
+        },
+      ]}
+    >
+      {props.children}
+    </TouchableOpacity>
   );
 };
 

@@ -1,44 +1,35 @@
 //import liraries
-import { IconAdd } from '@/assets/icons';
+import { IconAdd, IconCloseFilled } from '@/assets/icons';
 import { ThemeContext, ThemeContextType } from '@/contexts/ThemeContext';
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
-// import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from 'expo-image-picker';
+import TView from './TView';
 
 type TBoxImageProps = {
   onImageSelected?: (uri: string) => void;
+  onImageRemoved?: () => void;
+  value?: string | null;
 };
 
 // create a component
 const TBoxImage = (props: TBoxImageProps) => {
   const { selectedTheme } = React.useContext(ThemeContext) as ThemeContextType;
-  const [imageUri, setImageUri] = React.useState<string | null>(null);
+  // const [imageUri, setImageUri] = React.useState<string | null>(null);
 
   const pickImage = async () => {
-    // Ask for permission
-    // const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    // if (status !== 'granted') {
-    //   alert('Permission to access media library is required!');
-    //   return;
-    // }
-    // // Launch the image picker
-    console.log('1111');
-    // const [status, requestPermission] =
-    //   ImagePicker.useMediaLibraryPermissions();
-    console.log('2222');
-
-    // let result = await ImagePicker.launchImageLibraryAsync({
-    //   mediaTypes: ['images'],
-    //   allowsEditing: true,
-    //   quality: 1,
-    //   // base64: false,
-    // });
-    // console.log('ImagePicker result:', result);
-    // if (!result.canceled && result.assets && result.assets[0].uri) {
-    //   const uri = result.assets[0].uri;
-    //   setImageUri(uri);
-    //   props.onImageSelected && props.onImageSelected(uri);
-    // }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      // allowsEditing: true,
+      quality: 1,
+      // base64: false,
+    });
+    console.log('ImagePicker result:', result);
+    if (!result.canceled && result.assets && result.assets[0].uri) {
+      const uri = result.assets[0].uri;
+      // setImageUri(uri);
+      props.onImageSelected && props.onImageSelected(uri);
+    }
   };
 
   return (
@@ -47,16 +38,38 @@ const TBoxImage = (props: TBoxImageProps) => {
         style={[
           styles.box,
           {
-            borderColor: selectedTheme.colors.text2,
+            borderColor: props.value
+              ? 'transparent'
+              : selectedTheme.colors.text2,
           },
         ]}
       >
-        {imageUri ? (
-          <Image
-            source={{ uri: imageUri }}
-            style={styles.image}
-            resizeMode="cover"
-          />
+        {props.value ? (
+          <>
+            <Image
+              source={{ uri: props.value }}
+              style={styles.image}
+              resizeMode="cover"
+            />
+            <TView
+              style={{
+                top: -10,
+                right: -10,
+                position: 'absolute',
+                borderRadius: 20,
+                backgroundColor: 'text1',
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  // setImageUri(null);
+                  props.onImageRemoved && props.onImageRemoved();
+                }}
+              >
+                <IconCloseFilled />
+              </TouchableOpacity>
+            </TView>
+          </>
         ) : (
           <IconAdd size={35} color="text2" />
         )}

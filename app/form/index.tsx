@@ -18,13 +18,94 @@ import TSwitch from '@/components/common/TSwitch';
 import TPicker from '@/components/common/TPicker';
 import TButton from '@/components/common/TButton';
 import TCheckbox from '@/components/common/TCheckbox';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 
 export default function FormPage() {
+  const [images, setImages] = React.useState<(string | null)[]>(
+    Array(6).fill(null)
+  );
+
+  // Checkbox categories (for 6 categories)
+  const categoryKeys = [
+    'typography',
+    'colorAndEmotion',
+    'iconography',
+    'uxWriting',
+    'contentLayout',
+    'eyesTracking',
+  ];
+  const [categories, setCategories] = React.useState<{
+    [key: string]: boolean;
+  }>(Object.fromEntries(categoryKeys.map((k) => [k, false])));
+
   const [racSwitch, setRacSwitch] = React.useState(true);
   const [upSwitch, setUpSwitch] = React.useState(true);
   const [isSwitch, setIsSwitch] = React.useState(true);
-  const [selectedValue, setSelectedValue] = React.useState<string | null>(null);
+  const [selectedValue, setSelectedValue] = React.useState<string | null>(
+    'Mobile'
+  );
+  const [description, setDescription] = React.useState('');
+
+  const router = useRouter();
+
+  // Image handlers
+  const handleImageSelected = (index: number, uri: string) => {
+    setImages((prev) => {
+      const next = [...prev];
+      next[index] = uri;
+      return next;
+    });
+  };
+  const handleImageRemoved = (index: number) => {
+    setImages((prev) => {
+      const next = [...prev];
+      next[index] = null;
+      return next;
+    });
+  };
+
+  // Checkbox handler
+  const handleCategoryChange = (key: string, value: boolean) => {
+    setCategories((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  // Submit handler
+  const handleSubmit = () => {
+    const payload = {
+      images: images.filter(Boolean),
+      categories: racSwitch
+        ? {
+            typography: true,
+            colorAndEmotion: true,
+            iconography: true,
+            uxWriting: true,
+            contentLayout: true,
+            eyesTracking: true,
+          }
+        : categories,
+      userPerspective: upSwitch,
+      includeSimilarities: isSwitch,
+      deviceTarget: selectedValue,
+      description,
+    };
+    console.log('Form data:', payload);
+
+    // Navigate to result page
+    router.push('/result');
+  };
+
+  const handleReset = () => {
+    setImages(Array(6).fill(null));
+    setCategories(Object.fromEntries(categoryKeys.map((k) => [k, false])));
+    setRacSwitch(true);
+    setUpSwitch(true);
+    setIsSwitch(true);
+    setSelectedValue('Mobile');
+    setDescription('');
+  };
 
   const items = [
     { label: 'PC', value: 'PC' },
@@ -48,12 +129,13 @@ export default function FormPage() {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            // backgroundColor: 'red',
             gap: 20,
             height: '100%',
           }}
         >
-          <IconReset />
+          <TouchableOpacity activeOpacity={0.7} onPress={handleReset}>
+            <IconReset />
+          </TouchableOpacity>
           <IconInfo />
         </View>
       </View>
@@ -65,32 +147,43 @@ export default function FormPage() {
         <View
           style={{
             flexDirection: 'row',
-            marginTop: 20,
-            marginBottom: 10,
+            marginVertical: 20,
             alignItems: 'center',
             justifyContent: 'space-between',
+            paddingHorizontal: 10,
           }}
         >
-          <TBoxImage />
-          <TBoxImage />
-          <TBoxImage />
+          {[0, 1, 2].map((i) => (
+            <TBoxImage
+              key={i}
+              value={images[i] || null}
+              onImageRemoved={() => handleImageRemoved(i)}
+              onImageSelected={(uri: string) => handleImageSelected(i, uri)}
+            />
+          ))}
         </View>
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
+            paddingHorizontal: 10,
           }}
         >
-          <TBoxImage />
-          <TBoxImage />
-          <TBoxImage />
+          {[3, 4, 5].map((i) => (
+            <TBoxImage
+              key={i}
+              value={images[i] || null}
+              onImageRemoved={() => handleImageRemoved(i)}
+              onImageSelected={(uri: string) => handleImageSelected(i, uri)}
+            />
+          ))}
         </View>
         <TLine />
         <TAccordion
           title="Review all categories"
           rightIcon={'switch'}
-          onChange={(open: boolean) => setRacSwitch(!open)}
+          onChange={setRacSwitch}
         >
           <View
             style={{
@@ -101,14 +194,46 @@ export default function FormPage() {
             }}
           >
             <View style={{ flex: 1, gap: 20 }}>
-              <TCheckbox value={false} title="typography" />
-              <TCheckbox value={false} title="color and emotion" />
-              <TCheckbox value={false} title="Iconography" />
+              <TCheckbox
+                value={categories.typography}
+                title="typography"
+                onValueChange={(val) => handleCategoryChange('typography', val)}
+              />
+              <TCheckbox
+                value={categories.colorAndEmotion}
+                title="color and emotion"
+                onValueChange={(val) =>
+                  handleCategoryChange('colorAndEmotion', val)
+                }
+              />
+              <TCheckbox
+                value={categories.iconography}
+                title="Iconography"
+                onValueChange={(val) =>
+                  handleCategoryChange('iconography', val)
+                }
+              />
             </View>
             <View style={{ flex: 1, gap: 20 }}>
-              <TCheckbox value={false} title="ux writing" />
-              <TCheckbox value={false} title="content layout" />
-              <TCheckbox value={false} title="eyes tracking" />
+              <TCheckbox
+                value={categories.uxWriting}
+                title="ux writing"
+                onValueChange={(val) => handleCategoryChange('uxWriting', val)}
+              />
+              <TCheckbox
+                value={categories.contentLayout}
+                title="content layout"
+                onValueChange={(val) =>
+                  handleCategoryChange('contentLayout', val)
+                }
+              />
+              <TCheckbox
+                value={categories.eyesTracking}
+                title="eyes tracking"
+                onValueChange={(val) =>
+                  handleCategoryChange('eyesTracking', val)
+                }
+              />
             </View>
           </View>
         </TAccordion>
@@ -119,9 +244,9 @@ export default function FormPage() {
         <TInput
           multiline
           placeholder="type here ..."
-          style={{
-            minHeight: 100,
-          }}
+          style={{ minHeight: 100 }}
+          value={description}
+          onChangeText={setDescription}
         />
         <TLine />
         <TouchableOpacity
@@ -172,9 +297,7 @@ export default function FormPage() {
             onValueChange={(value: boolean) => setIsSwitch(value)}
           />
         </TouchableOpacity>
-        <Link href={'/result'} push asChild>
-          <TButton title="Submit" />
-        </Link>
+        <TButton title="Submit" onPress={handleSubmit} />
       </ScrollView>
     </TSafeAreaView>
   );

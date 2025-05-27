@@ -16,7 +16,7 @@ const palette = {
   background2: '#262626',
   text1: '#FFFFFF',
   text2: '#B1B1B1',
-  error: '#FF0000',
+  error: '#B3261E',
   confirm: '#1FBC61',
   warning: '#FFA500',
   link: '#0000FF',
