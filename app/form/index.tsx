@@ -19,6 +19,7 @@ import TPicker from '@/components/common/TPicker';
 import TButton from '@/components/common/TButton';
 import TCheckbox from '@/components/common/TCheckbox';
 import { Link, useRouter } from 'expo-router';
+import TBottomSheetModal from '@/components/common/TBottomSheetModal';
 
 export default function FormPage() {
   const [images, setImages] = React.useState<(string | null)[]>(
@@ -45,6 +46,7 @@ export default function FormPage() {
     'Mobile'
   );
   const [description, setDescription] = React.useState('');
+  const [modal, setModal] = React.useState<boolean>(false);
 
   const router = useRouter();
 
@@ -113,193 +115,216 @@ export default function FormPage() {
   ];
 
   return (
-    <TSafeAreaView style={{ paddingHorizontal: 20 }}>
-      {/* header */}
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 20,
-        }}
-      >
-        <TLogo />
+    <>
+      <TSafeAreaView style={{ paddingHorizontal: 20 }}>
+        {/* header */}
         <View
           style={{
             flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 20,
-            height: '100%',
-          }}
-        >
-          <TouchableOpacity activeOpacity={0.7} onPress={handleReset}>
-            <IconReset />
-          </TouchableOpacity>
-          <IconInfo />
-        </View>
-      </View>
-      {/* form */}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <TText fontweight="regular" fontsize="lg">
-          UI frames
-        </TText>
-        <View
-          style={{
-            flexDirection: 'row',
-            marginVertical: 20,
-            alignItems: 'center',
             justifyContent: 'space-between',
-            paddingHorizontal: 10,
-          }}
-        >
-          {[0, 1, 2].map((i) => (
-            <TBoxImage
-              key={i}
-              value={images[i] || null}
-              onImageRemoved={() => handleImageRemoved(i)}
-              onImageSelected={(uri: string) => handleImageSelected(i, uri)}
-            />
-          ))}
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingHorizontal: 10,
+            marginBottom: 20,
           }}
         >
-          {[3, 4, 5].map((i) => (
-            <TBoxImage
-              key={i}
-              value={images[i] || null}
-              onImageRemoved={() => handleImageRemoved(i)}
-              onImageSelected={(uri: string) => handleImageSelected(i, uri)}
-            />
-          ))}
+          <TLogo />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 20,
+              height: '100%',
+            }}
+          >
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                setModal(true);
+              }}
+            >
+              <IconReset />
+            </TouchableOpacity>
+            <IconInfo />
+          </View>
         </View>
-        <TLine />
-        <TAccordion
-          title="Review all categories"
-          rightIcon={'switch'}
-          onChange={setRacSwitch}
-        >
+        {/* form */}
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <TText fontweight="regular" fontsize="lg">
+            UI frames
+          </TText>
+          <View
+            style={{
+              flexDirection: 'row',
+              marginVertical: 20,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: 10,
+            }}
+          >
+            {[0, 1, 2].map((i) => (
+              <TBoxImage
+                key={i}
+                value={images[i] || null}
+                onImageRemoved={() => handleImageRemoved(i)}
+                onImageSelected={(uri: string) => handleImageSelected(i, uri)}
+              />
+            ))}
+          </View>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: 10,
+              paddingHorizontal: 10,
             }}
           >
-            <View style={{ flex: 1, gap: 20 }}>
-              <TCheckbox
-                value={categories.typography}
-                title="typography"
-                onValueChange={(val) => handleCategoryChange('typography', val)}
+            {[3, 4, 5].map((i) => (
+              <TBoxImage
+                key={i}
+                value={images[i] || null}
+                onImageRemoved={() => handleImageRemoved(i)}
+                onImageSelected={(uri: string) => handleImageSelected(i, uri)}
               />
-              <TCheckbox
-                value={categories.colorAndEmotion}
-                title="color and emotion"
-                onValueChange={(val) =>
-                  handleCategoryChange('colorAndEmotion', val)
-                }
-              />
-              <TCheckbox
-                value={categories.iconography}
-                title="Iconography"
-                onValueChange={(val) =>
-                  handleCategoryChange('iconography', val)
-                }
-              />
-            </View>
-            <View style={{ flex: 1, gap: 20 }}>
-              <TCheckbox
-                value={categories.uxWriting}
-                title="ux writing"
-                onValueChange={(val) => handleCategoryChange('uxWriting', val)}
-              />
-              <TCheckbox
-                value={categories.contentLayout}
-                title="content layout"
-                onValueChange={(val) =>
-                  handleCategoryChange('contentLayout', val)
-                }
-              />
-              <TCheckbox
-                value={categories.eyesTracking}
-                title="eyes tracking"
-                onValueChange={(val) =>
-                  handleCategoryChange('eyesTracking', val)
-                }
-              />
-            </View>
+            ))}
           </View>
-        </TAccordion>
-        <TLine />
-        <TText fontweight="regular" fontsize="lg" style={{ marginBottom: 10 }}>
-          Description
-        </TText>
-        <TInput
-          multiline
-          placeholder="type here ..."
-          style={{ minHeight: 100 }}
-          value={description}
-          onChangeText={setDescription}
-        />
-        <TLine />
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-          }}
-          onPress={() => setUpSwitch(!upSwitch)}
-          activeOpacity={0.7}
-        >
-          <TText fontweight="regular" fontsize="lg">
-            user perspective
+          <TLine />
+          <TAccordion
+            title="Review all categories"
+            rightIcon={'switch'}
+            onChange={setRacSwitch}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: 10,
+              }}
+            >
+              <View style={{ flex: 1, gap: 20 }}>
+                <TCheckbox
+                  value={categories.typography}
+                  title="typography"
+                  onValueChange={(val) =>
+                    handleCategoryChange('typography', val)
+                  }
+                />
+                <TCheckbox
+                  value={categories.colorAndEmotion}
+                  title="color and emotion"
+                  onValueChange={(val) =>
+                    handleCategoryChange('colorAndEmotion', val)
+                  }
+                />
+                <TCheckbox
+                  value={categories.iconography}
+                  title="Iconography"
+                  onValueChange={(val) =>
+                    handleCategoryChange('iconography', val)
+                  }
+                />
+              </View>
+              <View style={{ flex: 1, gap: 20 }}>
+                <TCheckbox
+                  value={categories.uxWriting}
+                  title="ux writing"
+                  onValueChange={(val) =>
+                    handleCategoryChange('uxWriting', val)
+                  }
+                />
+                <TCheckbox
+                  value={categories.contentLayout}
+                  title="content layout"
+                  onValueChange={(val) =>
+                    handleCategoryChange('contentLayout', val)
+                  }
+                />
+                <TCheckbox
+                  value={categories.eyesTracking}
+                  title="eyes tracking"
+                  onValueChange={(val) =>
+                    handleCategoryChange('eyesTracking', val)
+                  }
+                />
+              </View>
+            </View>
+          </TAccordion>
+          <TLine />
+          <TText
+            fontweight="regular"
+            fontsize="lg"
+            style={{ marginBottom: 10 }}
+          >
+            Description
           </TText>
-          <TSwitch
-            value={upSwitch}
-            onValueChange={(value: boolean) => setUpSwitch(value)}
+          <TInput
+            multiline
+            placeholder="type here ..."
+            style={{ minHeight: 100 }}
+            value={description}
+            onChangeText={setDescription}
           />
-        </TouchableOpacity>
-        <TLine />
-        <TText fontweight="regular" fontsize="lg">
-          Device target
-        </TText>
-        <TPicker
-          items={items}
-          value={selectedValue}
-          onSelect={setSelectedValue}
-          placeholder="Choose a device"
-        />
-        <TLine />
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-            marginBottom: 20,
-          }}
-          onPress={() => setIsSwitch(!isSwitch)}
-          activeOpacity={0.7}
-        >
+          <TLine />
+          <TouchableOpacity
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+            }}
+            onPress={() => setUpSwitch(!upSwitch)}
+            activeOpacity={0.7}
+          >
+            <TText fontweight="regular" fontsize="lg">
+              user perspective
+            </TText>
+            <TSwitch
+              value={upSwitch}
+              onValueChange={(value: boolean) => setUpSwitch(value)}
+            />
+          </TouchableOpacity>
+          <TLine />
           <TText fontweight="regular" fontsize="lg">
-            Include Similarities
+            Device target
           </TText>
-          <TSwitch
-            value={isSwitch}
-            onValueChange={(value: boolean) => setIsSwitch(value)}
+          <TPicker
+            items={items}
+            value={selectedValue}
+            onSelect={setSelectedValue}
+            placeholder="Choose a device"
           />
-        </TouchableOpacity>
-        <TButton title="Submit" onPress={handleSubmit} />
-      </ScrollView>
-    </TSafeAreaView>
+          <TLine />
+          <TouchableOpacity
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              marginBottom: 20,
+            }}
+            onPress={() => setIsSwitch(!isSwitch)}
+            activeOpacity={0.7}
+          >
+            <TText fontweight="regular" fontsize="lg">
+              Include Similarities
+            </TText>
+            <TSwitch
+              value={isSwitch}
+              onValueChange={(value: boolean) => setIsSwitch(value)}
+            />
+          </TouchableOpacity>
+          <TButton title="Submit" onPress={handleSubmit} />
+        </ScrollView>
+      </TSafeAreaView>
+      <TBottomSheetModal
+        open={modal}
+        title="Are you sure you want to start over?"
+        onCancel={() => {
+          setModal(false);
+        }}
+        onConfirm={handleReset}
+      />
+    </>
   );
 }
 
