@@ -107,6 +107,7 @@ export default function FormPage() {
     setIsSwitch(true);
     setSelectedValue('Mobile');
     setDescription('');
+    setModal(false);
   };
 
   const items = [

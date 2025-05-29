@@ -18,6 +18,7 @@ interface TButtonProps extends TouchableOpacityProps {
   fontweight?: IFontWeight;
   style?: ViewStyle;
   outline?: boolean;
+  rightIcon?: JSX.Element;
 }
 // create a component
 const TButton = (props: TButtonProps) => {
@@ -27,7 +28,6 @@ const TButton = (props: TButtonProps) => {
       {...props}
       style={[
         {
-          ...props.style,
           backgroundColor: props.bgColor
             ? selectedTheme.colors[props.bgColor]
             : selectedTheme.colors.primary,
@@ -38,6 +38,7 @@ const TButton = (props: TButtonProps) => {
           justifyContent: 'center',
           alignItems: 'center',
           flexDirection: 'row',
+          ...props.style,
         },
         props.outline && {
           backgroundColor: 'transparent',
@@ -61,6 +62,7 @@ const TButton = (props: TButtonProps) => {
       >
         {props.title}
       </TText>
+      {props.rightIcon}
     </TouchableOpacity>
   );
 };

@@ -21,6 +21,7 @@ interface TAccordionProps extends PropsWithChildren {
   style?: ViewStyle;
   rightIcon: 'arrow' | 'switch';
   onChange?: (open: boolean) => void;
+  initial?: boolean;
 }
 
 const TAccordion = ({
@@ -30,8 +31,9 @@ const TAccordion = ({
   style,
   rightIcon,
   onChange,
+  initial,
 }: TAccordionProps) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(initial ? true : false);
   const [contentHeight, setContentHeight] = useState(0);
 
   const animatedHeight = useSharedValue(0);

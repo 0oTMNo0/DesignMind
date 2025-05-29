@@ -6,6 +6,9 @@ import IconAdd from './IconAdd';
 import IconArrow from './IconArrow';
 import IconClose from './IconClose';
 import IconCloseFilled from './IconCloseFilled';
+import IconEye from './IconEye';
+import IconHand from './IconHand';
+import IconLayout from './IconLayout';
 
 export {
   IconAI,
@@ -15,4 +18,7 @@ export {
   IconArrow,
   IconClose,
   IconCloseFilled,
+  IconEye,
+  IconHand,
+  IconLayout,
 };

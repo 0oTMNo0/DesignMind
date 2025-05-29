@@ -62,6 +62,16 @@ const TBottomSheetModal = (props: TBottomSheetModalProps) => {
               <TText fontweight="bold" style={{ marginBottom: 10 }}>
                 {props.title}
               </TText>
+              <TText
+                color="text2"
+                style={{
+                  textAlign: 'center',
+                  lineHeight: 30,
+                  marginBottom: 20,
+                }}
+              >
+                {props.description}
+              </TText>
               <View
                 style={{
                   flexDirection: 'row',
