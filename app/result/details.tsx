@@ -43,7 +43,6 @@ const Details = () => {
         break;
       case 'eye':
         setActiveMode((value) => (value == 'eye' ? 'none' : 'eye'));
-        console.log(activeMode);
         break;
       case 'layout':
         setActiveMode(activeMode == 'layout' ? 'none' : 'layout');
@@ -114,7 +113,14 @@ const Details = () => {
               }}
             >
               <View></View>
-              <ImageShower />
+              <ImageShower
+                mode={activeMode}
+                eyePointList={[
+                  { x: 20, y: 150, size: 'md' },
+                  { x: 10, y: 20, size: 'md' },
+                  { x: 150, y: 300, size: 'sm' },
+                ]}
+              />
               <View
                 style={{
                   width: 50,

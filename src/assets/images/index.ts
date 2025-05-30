@@ -13,4 +13,5 @@ export default {
   img12: require('./img12.png'),
   img13: require('./img13.png'),
   img14: require('./img14.png'),
+  imageHandZone: require('./imageHandZone.png'),
 };
