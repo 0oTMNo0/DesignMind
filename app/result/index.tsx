@@ -14,6 +14,8 @@ import Animated, {
   interpolate,
   withDelay,
 } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store'; // adjust the path if your store is elsewhere
 
 const PULSE_COUNT = 3;
 const PULSE_DURATION = 1800; // ms
@@ -74,10 +76,12 @@ const PulseCircle = ({ delayMs = 0 }: { delayMs: number }) => {
 };
 
 const LoadingPage = () => {
+  const formPayload = useSelector((state: RootState) => state.global.payload);
   React.useEffect(() => {
     const timer = setTimeout(() => {
       // router.push('/result/details');
-      router.replace('/result/details');
+      // router.replace('/result/details');
+      console.log(formPayload);
     }, 1000);
   }, []);
 

@@ -20,6 +20,9 @@ import TButton from '@/components/common/TButton';
 import TCheckbox from '@/components/common/TCheckbox';
 import { Link, useRouter } from 'expo-router';
 import TBottomSheetModal from '@/components/common/TBottomSheetModal';
+import { formPayloadType } from '@/constants/Global';
+import { useDispatch } from 'react-redux';
+import { saveFormPayload } from '@/store/slices/GlobalSlice';
 
 export default function FormPage() {
   const [images, setImages] = React.useState<(string | null)[]>(
@@ -49,6 +52,7 @@ export default function FormPage() {
   const [modal, setModal] = React.useState<boolean>(false);
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   // Image handlers
   const handleImageSelected = (index: number, uri: string) => {
@@ -76,7 +80,7 @@ export default function FormPage() {
 
   // Submit handler
   const handleSubmit = () => {
-    const payload = {
+    const payload: formPayloadType = {
       images: images.filter(Boolean),
       categories: racSwitch
         ? {
@@ -87,13 +91,14 @@ export default function FormPage() {
             contentLayout: true,
             eyesTracking: true,
           }
-        : categories,
+        : (categories as any),
       userPerspective: upSwitch,
       includeSimilarities: isSwitch,
-      deviceTarget: selectedValue,
+      deviceTarget: selectedValue as 'Mobile' | 'PC',
       description,
     };
     console.log('Form data:', payload);
+    dispatch(saveFormPayload(payload));
 
     // Navigate to result page
     router.push('/result');

@@ -3,7 +3,9 @@ import React from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { ThemeProvider } from '@/contexts/ThemeContext';
-import { Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Provider } from 'react-redux';
+import { store } from '@/store/store';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,10 +33,12 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView>
-      <ThemeProvider>
-        <Slot />
-      </ThemeProvider>
-    </GestureHandlerRootView>
+    <Provider store={store}>
+      <GestureHandlerRootView>
+        <ThemeProvider>
+          <Slot />
+        </ThemeProvider>
+      </GestureHandlerRootView>
+    </Provider>
   );
 }
