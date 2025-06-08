@@ -3,10 +3,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface FormState {
   payload: formPayloadType | null;
+  result: any;
 }
 
 const initialState: FormState = {
   payload: null,
+  result: null,
 };
 
 const globalSlice = createSlice({
@@ -19,8 +21,19 @@ const globalSlice = createSlice({
     clearFormPayload(state) {
       state.payload = null;
     },
+    saveFormResult(state, action: PayloadAction<any>) {
+      state.result = action.payload;
+    },
+    clearFormResult(state) {
+      state.result = null;
+    },
   },
 });
 
-export const { saveFormPayload, clearFormPayload } = globalSlice.actions;
+export const {
+  saveFormPayload,
+  clearFormPayload,
+  saveFormResult,
+  clearFormResult,
+} = globalSlice.actions;
 export default globalSlice.reducer;

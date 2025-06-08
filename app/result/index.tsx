@@ -4,7 +4,7 @@ import TText from '@/components/common/TText';
 import TView from '@/components/common/TView';
 import { router } from 'expo-router';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -16,12 +16,172 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store'; // adjust the path if your store is elsewhere
+import { useDispatch } from 'react-redux';
+import { saveFormResult } from '@/store/slices/GlobalSlice';
+import { usePostImageUnderstandingMutation } from '@/services/GeminiApi';
+import * as FileSystem from 'expo-file-system';
+import { GeminiPrompt, generationConfig, TestData64 } from '@/constants/Global';
+import { GenerateContentParameters, GoogleGenAI } from '@google/genai';
 
 const PULSE_COUNT = 3;
 const PULSE_DURATION = 1800; // ms
 const PULSE_SIZE = 200; // circle diameter
 
 // Pass color as a prop
+
+const LoadingPage = () => {
+  const [showError, setShowError] = React.useState(false);
+  const ai = new GoogleGenAI({
+    apiKey: 'AIzaSyBFihUKfUuT4KIUTJ0m60mm9vjnOn9oiYc',
+  });
+
+  const dispatch = useDispatch();
+  const formPayload = useSelector((state: RootState) => state.global.payload);
+
+  const prepareAndSend = async () => {
+    // Convert image URIs to base64 and build the Gemini parts
+    if (!formPayload) return;
+    const imagesBase64 = await Promise.all(
+      formPayload.images.map(async (img: { uri: string; mimeType: string }) => {
+        return {
+          mimeType: img.mimeType,
+          data: await uriToBase64(img.uri),
+          // data: TestData64,
+          // data: Buffer.from(imageArrayBuffer).toString('base64'),
+        };
+      })
+    );
+
+    // Build Gemini API body
+    const parts = [
+      { text: GeminiPrompt },
+      ...imagesBase64.map((img: any) => ({
+        inlineData: {
+          mimeType: img.mimeType,
+          // mimeType: 'image/png',
+          data: img.data,
+          // data: 'test',
+        },
+      })),
+    ];
+
+    const body = {
+      contents: [{ parts }],
+      generationConfig: generationConfig,
+    };
+    // return body as res
+
+    return body;
+  };
+
+  React.useEffect(() => {
+    if (formPayload) {
+      prepareAndSend().then(async (body: any) => {
+        console.log('Prepared body for Gemini API:', body.contents[0]?.parts);
+        const response = await ai.models
+          .generateContent({
+            model: 'gemini-2.0-flash',
+            contents: body.contents, // GeminiPrompt,
+            config: body.generationConfig,
+          } as GenerateContentParameters)
+          .then((res: any) => {
+            console.log('Response from Gemini API:', res);
+            const rawText = res.candidates[0].content.parts[0].text;
+            const parsedData = JSON.parse(rawText); // Convert to JSON
+
+            dispatch(saveFormResult(parsedData));
+            router.replace('/result/details');
+          })
+          .catch((err) => {
+            console.error('Error calling Gemini API:', err);
+          })
+          .finally(() => {
+            setShowError(true);
+          });
+      });
+    }
+  }, [formPayload]);
+
+  async function uriToBase64(uri: string): Promise<string> {
+    return await FileSystem.readAsStringAsync(uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+  }
+
+  function getMimeTypeFromUri(uri: string): string {
+    if (uri.endsWith('.png')) return 'image/png';
+    if (uri.endsWith('.jpg') || uri.endsWith('.jpeg')) return 'image/jpeg';
+    if (uri.endsWith('.webp')) return 'image/webp';
+    // add more as needed
+    return 'application/octet-stream'; // fallback
+  }
+
+  return (
+    <TSafeAreaView>
+      {/* on loading */}
+      {!showError ? (
+        <View style={styles.container}>
+          {[...Array(PULSE_COUNT)].map((_, i) => (
+            <PulseCircle key={i} delayMs={(i * PULSE_DURATION) / PULSE_COUNT} />
+          ))}
+          <View style={styles.iconContainer} pointerEvents="none">
+            <IconAI color="secondary" size={70} />
+          </View>
+          <TText
+            style={{ top: PULSE_SIZE - 40 }}
+            fontweight="bold"
+            fontsize="2xl"
+          >
+            Thinking ...
+          </TText>
+        </View>
+      ) : (
+        // on error
+        <View style={styles.container}>
+          <TView
+            style={{
+              width: PULSE_SIZE,
+              height: PULSE_SIZE,
+              backgroundColor: 'background1',
+              borderColor: 'text2',
+              borderWidth: 5,
+              borderRadius: PULSE_SIZE,
+              marginBottom: 40,
+            }}
+          >
+            <></>
+          </TView>
+          <TText fontweight="bold" fontsize="2xl">
+            error, please try again...
+          </TText>
+          <View
+            style={{
+              flexDirection: 'row',
+              gap: 70,
+              marginTop: 40,
+            }}
+          >
+            <TouchableOpacity activeOpacity={0.7} onPress={() => router.back()}>
+              <IconClose size={40} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                setShowError(false);
+                // Re-trigger the mutation
+                // Optionally, call the mutation again as in Step 4
+                prepareAndSend(); // Now this will actually retry
+              }}
+            >
+              <IconReset size={40} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </TSafeAreaView>
+  );
+};
+
 const PulseCircle = ({ delayMs = 0 }: { delayMs: number }) => {
   const progress = useSharedValue(0);
 
@@ -72,68 +232,6 @@ const PulseCircle = ({ delayMs = 0 }: { delayMs: number }) => {
         <></>
       </TView>
     </Animated.View>
-  );
-};
-
-const LoadingPage = () => {
-  const formPayload = useSelector((state: RootState) => state.global.payload);
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      // router.push('/result/details');
-      // router.replace('/result/details');
-      console.log(formPayload);
-    }, 1000);
-  }, []);
-
-  return (
-    <TSafeAreaView>
-      {true ? (
-        <View style={styles.container}>
-          {[...Array(PULSE_COUNT)].map((_, i) => (
-            <PulseCircle key={i} delayMs={(i * PULSE_DURATION) / PULSE_COUNT} />
-          ))}
-          <View style={styles.iconContainer} pointerEvents="none">
-            <IconAI color="secondary" size={70} />
-          </View>
-          <TText
-            style={{ top: PULSE_SIZE - 40 }}
-            fontweight="bold"
-            fontsize="2xl"
-          >
-            Thinking ...
-          </TText>
-        </View>
-      ) : (
-        <View style={styles.container}>
-          <TView
-            style={{
-              width: PULSE_SIZE,
-              height: PULSE_SIZE,
-              backgroundColor: 'background1',
-              borderColor: 'text2',
-              borderWidth: 5,
-              borderRadius: PULSE_SIZE,
-              marginBottom: 40,
-            }}
-          >
-            <></>
-          </TView>
-          <TText fontweight="bold" fontsize="2xl">
-            error, please try again...
-          </TText>
-          <View
-            style={{
-              flexDirection: 'row',
-              gap: 70,
-              marginTop: 40,
-            }}
-          >
-            <IconClose size={40} />
-            <IconReset size={40} />
-          </View>
-        </View>
-      )}
-    </TSafeAreaView>
   );
 };
 

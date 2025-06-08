@@ -4,6 +4,7 @@ export const appApi = createApi({
   reducerPath: 'api/',
   refetchOnFocus: false,
   refetchOnReconnect: false,
+  keepUnusedDataFor: 2,
   baseQuery: axiosBaseQuery(),
   tagTypes: ['gemini'],
   endpoints: () => ({}),

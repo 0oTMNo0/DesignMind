@@ -7,7 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import TView from './TView';
 
 type TBoxImageProps = {
-  onImageSelected?: (uri: string) => void;
+  onImageSelected?: (uri: string, mimeType: any) => void;
   onImageRemoved?: () => void;
   value?: string | null;
 };
@@ -27,8 +27,9 @@ const TBoxImage = (props: TBoxImageProps) => {
     console.log('ImagePicker result:', result);
     if (!result.canceled && result.assets && result.assets[0].uri) {
       const uri = result.assets[0].uri;
+      const mimeType = result.assets[0].mimeType;
       // setImageUri(uri);
-      props.onImageSelected && props.onImageSelected(uri);
+      props.onImageSelected && props.onImageSelected(uri, mimeType);
     }
   };
 

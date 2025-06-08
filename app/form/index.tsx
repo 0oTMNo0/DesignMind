@@ -1,12 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import TSafeAreaView from '@/components/common/TSafeView';
-import {
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import TLogo from '@/components/common/TLogo';
 import { IconInfo, IconReset } from '@/assets/icons';
 import TText from '@/components/common/TText';
@@ -18,16 +12,19 @@ import TSwitch from '@/components/common/TSwitch';
 import TPicker from '@/components/common/TPicker';
 import TButton from '@/components/common/TButton';
 import TCheckbox from '@/components/common/TCheckbox';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import TBottomSheetModal from '@/components/common/TBottomSheetModal';
 import { formPayloadType } from '@/constants/Global';
 import { useDispatch } from 'react-redux';
 import { saveFormPayload } from '@/store/slices/GlobalSlice';
 
 export default function FormPage() {
-  const [images, setImages] = React.useState<(string | null)[]>(
-    Array(6).fill(null)
-  );
+  const [images, setImages] = React.useState<
+    {
+      uri: string;
+      mimeType: string;
+    }[]
+  >([]);
 
   // Checkbox categories (for 6 categories)
   const categoryKeys = [
@@ -55,18 +52,27 @@ export default function FormPage() {
   const dispatch = useDispatch();
 
   // Image handlers
-  const handleImageSelected = (index: number, uri: string) => {
+  const handleImageSelected = (
+    index: number,
+    uri: string,
+    mimeType: string
+  ) => {
     setImages((prev) => {
       const next = [...prev];
-      next[index] = uri;
+      if (next[index]) {
+        next[index].uri = uri;
+        next[index].mimeType = mimeType;
+      } else {
+        next[index] = { uri, mimeType };
+      }
+      // next[index] = uri;
       return next;
     });
   };
   const handleImageRemoved = (index: number) => {
     setImages((prev) => {
-      const next = [...prev];
-      next[index] = null;
-      return next;
+      const temp = prev.filter((_, i) => i !== index);
+      return temp;
     });
   };
 
@@ -81,8 +87,8 @@ export default function FormPage() {
   // Submit handler
   const handleSubmit = () => {
     const payload: formPayloadType = {
-      images: images.filter(Boolean),
-      categories: racSwitch
+      images: images,
+      categories: !racSwitch
         ? {
             typography: true,
             colorAndEmotion: true,
@@ -97,7 +103,7 @@ export default function FormPage() {
       deviceTarget: selectedValue as 'Mobile' | 'PC',
       description,
     };
-    console.log('Form data:', payload);
+    console.log('Form Payload:', payload);
     dispatch(saveFormPayload(payload));
 
     // Navigate to result page
@@ -170,9 +176,11 @@ export default function FormPage() {
             {[0, 1, 2].map((i) => (
               <TBoxImage
                 key={i}
-                value={images[i] || null}
+                value={images[i]?.uri || null}
                 onImageRemoved={() => handleImageRemoved(i)}
-                onImageSelected={(uri: string) => handleImageSelected(i, uri)}
+                onImageSelected={(uri: string, mimeType: string) =>
+                  handleImageSelected(i, uri, mimeType)
+                }
               />
             ))}
           </View>
@@ -187,9 +195,11 @@ export default function FormPage() {
             {[3, 4, 5].map((i) => (
               <TBoxImage
                 key={i}
-                value={images[i] || null}
+                value={images[i]?.uri || null}
                 onImageRemoved={() => handleImageRemoved(i)}
-                onImageSelected={(uri: string) => handleImageSelected(i, uri)}
+                onImageSelected={(uri: string, mimeType: any) =>
+                  handleImageSelected(i, uri, mimeType)
+                }
               />
             ))}
           </View>

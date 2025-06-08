@@ -2,8 +2,6 @@
 import type { BaseQueryFn } from '@reduxjs/toolkit/query';
 import axios from 'axios';
 import type { AxiosRequestConfig, AxiosError } from 'axios';
-import { Platform } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const axiosBaseQuery =
   (): BaseQueryFn<
@@ -19,15 +17,18 @@ const axiosBaseQuery =
   > =>
   async ({ url, method, data, params, headers }, { getState }) => {
     try {
+      console.log('--------0', headers);
       const result = await axios({
         url,
         method,
         data,
         params,
+        // headers,
         headers: {
           ['Content-Type']: headers?.['Content-Type'] || 'application/json',
         },
       });
+      console.log('-------1', result.headers);
       return { data: result.data };
     } catch (axiosError) {
       const err = axiosError as AxiosError;

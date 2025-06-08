@@ -18,6 +18,8 @@ import TSafeAreaView from '@/components/common/TSafeView';
 import TTage from '@/components/common/TTage';
 import TText from '@/components/common/TText';
 import TView from '@/components/common/TView';
+import { RootState } from '@/store/store';
+import { router } from 'expo-router';
 import React from 'react';
 import {
   View,
@@ -26,9 +28,13 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import { useSelector } from 'react-redux';
 
 // create a component
 const Details = () => {
+  const formPayload = useSelector((state: RootState) => state.global.payload);
+  const formResult = useSelector((state: RootState) => state.global.result);
+
   const [modal, setModal] = React.useState<boolean>(false);
 
   const [frameSelected, setFrameSelected] = React.useState<number>(0);
@@ -54,6 +60,11 @@ const Details = () => {
         break;
     }
   };
+
+  React.useEffect(() => {
+    console.log('11111111', formPayload);
+    console.log('222222222', JSON.stringify(formResult));
+  }, []);
 
   return (
     <>
@@ -282,6 +293,9 @@ const Details = () => {
         title="Are you sure you want to start over?"
         onCancel={() => {
           setModal(false);
+        }}
+        onConfirm={() => {
+          router.replace('/');
         }}
         description="This will clear your current selections and take you back to the beginning. You will not be able to recover your previous choices."
         // onConfirm={handleReset}
