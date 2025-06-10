@@ -14,7 +14,7 @@ import TButton from '@/components/common/TButton';
 import TCheckbox from '@/components/common/TCheckbox';
 import { useRouter } from 'expo-router';
 import TBottomSheetModal from '@/components/common/TBottomSheetModal';
-import { formPayloadType } from '@/constants/Global';
+import { formPayloadType, TestData64 } from '@/constants/Global';
 import { useDispatch } from 'react-redux';
 import { saveFormPayload } from '@/store/slices/GlobalSlice';
 import * as FileSystem from 'expo-file-system';
@@ -96,15 +96,7 @@ export default function FormPage() {
         data: await uriToBase64(img.uri), // Properly awaited
       }))
     );
-    console.log(typeof base64Images[0].data);
     const payload: formPayloadType = {
-      // images: images,
-      // add base64 images
-      // images: images.map((img) => ({
-      //   uri: img.uri,
-      //   mimeType: img.mimeType,
-      //   data: uriToBase64(img.uri) as any, // Convert URI to base64
-      // })),
       images: base64Images,
       categories: !racSwitch
         ? {

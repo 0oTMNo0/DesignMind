@@ -18,6 +18,8 @@ import TSafeAreaView from '@/components/common/TSafeView';
 import TTage from '@/components/common/TTage';
 import TText from '@/components/common/TText';
 import TView from '@/components/common/TView';
+import { TestData64 } from '@/constants/Global';
+import { clearFormPayload } from '@/store/slices/GlobalSlice';
 import { RootState } from '@/store/store';
 import { router } from 'expo-router';
 import React from 'react';
@@ -28,13 +30,13 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // create a component
 const Details = () => {
   const formPayload = useSelector((state: RootState) => state.global.payload);
   const formResult = useSelector((state: RootState) => state.global.result);
-
+  const dispatch = useDispatch();
   const [modal, setModal] = React.useState<boolean>(false);
 
   const [frameSelected, setFrameSelected] = React.useState<number>(0);
@@ -65,7 +67,11 @@ const Details = () => {
     // console.log('11111111', formPayload);
     // console.log('222222222', formResult[frameSelected].eyesTracking);
     // clg the formPayload?.images?.[frameSelected].data keys since it's an object
-    console.log('222222222 keys', formResult[frameSelected]);
+    console.log(
+      '222222222 keys',
+      formPayload?.images[0].data.slice(0, 10),
+      TestData64[0].data.slice(0, 10)
+    );
     // console.log('33333333', formPayload?.images?.[frameSelected].data);
   }, []);
 
@@ -400,7 +406,9 @@ const Details = () => {
           setModal(false);
         }}
         onConfirm={() => {
-          router.replace('/');
+          dispatch(clearFormPayload());
+          dispatch(clearFormPayload());
+          router.dismissAll();
         }}
         description="This will clear your current selections and take you back to the beginning. You will not be able to recover your previous choices."
         // onConfirm={handleReset}
