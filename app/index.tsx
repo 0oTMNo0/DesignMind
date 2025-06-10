@@ -176,7 +176,7 @@ const AnimatedCarousel = ({ width, height }: any) => {
         </View>
       </Marquee>
 
-      {/* <TLogoGradient /> */}
+      <TLogoGradient />
     </View>
   );
 };

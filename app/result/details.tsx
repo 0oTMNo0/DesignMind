@@ -62,8 +62,11 @@ const Details = () => {
   };
 
   React.useEffect(() => {
-    console.log('11111111', formPayload);
-    console.log('222222222', JSON.stringify(formResult));
+    // console.log('11111111', formPayload);
+    // console.log('222222222', formResult[frameSelected].eyesTracking);
+    // clg the formPayload?.images?.[frameSelected].data keys since it's an object
+    console.log('222222222 keys', formResult[frameSelected]);
+    // console.log('33333333', formPayload?.images?.[frameSelected].data);
   }, []);
 
   return (
@@ -116,7 +119,8 @@ const Details = () => {
           >
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection:
+                  formPayload?.deviceTarget === 'Mobile' ? 'row' : 'column',
                 width: '100%',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -125,109 +129,195 @@ const Details = () => {
             >
               <View></View>
               <ImageShower
+                deviceTarget={formPayload?.deviceTarget || 'Mobile'}
+                data={formPayload?.images?.[frameSelected]?.data as any}
                 mode={activeMode}
-                eyePointList={[
-                  { x: 20, y: 150, size: 'md' },
-                  { x: 10, y: 20, size: 'md' },
-                  { x: 150, y: 300, size: 'sm' },
-                ]}
+                eyePointList={formResult[frameSelected]?.eyesTracking}
               />
               <View
-                style={{
-                  width: 50,
-                  height: 90,
-                  // backgroundColor: 'red',
-                  position: 'absolute',
-                  right: 0,
-                  gap: 20,
-                }}
+                style={
+                  formPayload?.deviceTarget === 'Mobile'
+                    ? {
+                        width: 50,
+                        height: 90,
+                        position: 'absolute',
+                        right: 0,
+                        gap: 20,
+                      }
+                    : {
+                        width: '100%',
+                        height: 50,
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        gap: 40,
+                      }
+                }
               >
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => handleMode('eye')}
-                >
-                  <IconEye
-                    color={activeMode !== 'eye' ? 'text2' : 'primary'}
-                    size={35}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => handleMode('layout')}
-                >
-                  <IconLayout
-                    color={activeMode !== 'layout' ? 'text2' : 'primary'}
-                    size={35}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => handleMode('hand')}
-                >
-                  <IconHand
-                    color={activeMode !== 'hand' ? 'text2' : 'primary'}
-                    size={35}
-                  />
-                </TouchableOpacity>
+                {formPayload?.categories.eyesTracking && (
+                  <>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => handleMode('eye')}
+                    >
+                      <IconEye
+                        color={activeMode !== 'eye' ? 'text2' : 'primary'}
+                        size={35}
+                      />
+                    </TouchableOpacity>
+                  </>
+                )}
+                {formPayload?.categories.eyesTracking && (
+                  <>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => handleMode('layout')}
+                    >
+                      <IconLayout
+                        color={activeMode !== 'layout' ? 'text2' : 'primary'}
+                        size={35}
+                      />
+                    </TouchableOpacity>
+                  </>
+                )}
+                {/* hand mode is only available on mobile */}
+                {formPayload?.deviceTarget !== 'Mobile' ? null : (
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={() => handleMode('hand')}
+                  >
+                    <IconHand
+                      color={activeMode !== 'hand' ? 'text2' : 'primary'}
+                      size={35}
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
+            {formPayload?.includeSimilarities && (
+              <>
+                <TText
+                  fontweight="regular"
+                  fontsize="lg"
+                  style={{ marginBottom: 10 }}
+                >
+                  Shared Attributes
+                </TText>
 
-            <TText
-              fontweight="regular"
-              fontsize="lg"
-              style={{ marginBottom: 10 }}
-            >
-              Shared Attributes
-            </TText>
-            <View style={{ flexDirection: 'row', gap: 10 }}>
-              <TTage title="123" />
-              <TTage title="123" />
-              <TTage title="123" />
-            </View>
-            <TLine />
-            <TAccordion initial title="Typography" rightIcon={'arrow'}>
-              <TText style={{ padding: 10 }}>
-                The UI features a clean white background that conveys simplicity
-                and openness. The primary color, purple, evokes creativity and
-                calm, while the red accents add a touch of urgency and
-                alertness. This combination creates a modern and engaging
-                interface, balancing a sense of sophistication with
-                user-friendly design elements.
-              </TText>
-            </TAccordion>
-            <TLine />
-            <TAccordion title="Color and Emotion" rightIcon={'arrow'}>
-              <TText style={{ padding: 10 }}>
-                The UI features a clean white background that conveys simplicity
-                and openness. The primary color, purple, evokes creativity and
-                calm, while the red accents add a touch of urgency and
-                alertness. This combination creates a modern and engaging
-                interface, balancing a sense of sophistication with
-                user-friendly design elements.
-              </TText>
-            </TAccordion>
-            <TLine />
-            <TAccordion title="Iconography" rightIcon={'arrow'}>
-              <TText style={{ padding: 10 }}>
-                The UI features a clean white background that conveys simplicity
-                and openness. The primary color, purple, evokes creativity and
-                calm, while the red accents add a touch of urgency and
-                alertness. This combination creates a modern and engaging
-                interface, balancing a sense of sophistication with
-                user-friendly design elements.
-              </TText>
-            </TAccordion>
-            <TLine />
-            <TAccordion title="UX writing" rightIcon={'arrow'}>
-              <TText style={{ padding: 10 }}>
-                The UI features a clean white background that conveys simplicity
-                and openness. The primary color, purple, evokes creativity and
-                calm, while the red accents add a touch of urgency and
-                alertness. This combination creates a modern and engaging
-                interface, balancing a sense of sophistication with
-                user-friendly design elements.
-              </TText>
-            </TAccordion>
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <TTage
+                    title="Color"
+                    disabled={
+                      formResult[frameSelected]?.similarity.color === false
+                    }
+                  />
+
+                  {/* font */}
+
+                  <TTage
+                    title="Font"
+                    disabled={
+                      formResult[frameSelected]?.similarity.font === false
+                    }
+                  />
+
+                  {/* icon */}
+
+                  <TTage
+                    title="Icon type"
+                    disabled={
+                      formResult[frameSelected]?.similarity.icon === false
+                    }
+                  />
+
+                  {/* semanticCategory between the frames */}
+
+                  <TTage
+                    title="Semantic Category"
+                    disabled={
+                      formResult[frameSelected]?.similarity.semanticCategory ===
+                      false
+                    }
+                  />
+                </View>
+
+                <TLine />
+              </>
+            )}
+            {formPayload?.categories.typography && (
+              <>
+                <TAccordion initial title="Typography" rightIcon={'arrow'}>
+                  <TText style={{ padding: 10 }}>
+                    {formResult[frameSelected]?.typography}
+                  </TText>
+                </TAccordion>
+                <TLine />
+              </>
+            )}
+            {formPayload?.categories.colorAndEmotion && (
+              <>
+                <TAccordion title="Color and Emotion" rightIcon={'arrow'}>
+                  <TText style={{ padding: 10 }}>
+                    {formResult[frameSelected]?.colorAndEmotion}
+                  </TText>
+                </TAccordion>
+                <TLine />
+              </>
+            )}
+            {formPayload?.categories.iconography && (
+              <>
+                <TAccordion title="Iconography" rightIcon={'arrow'}>
+                  <TText style={{ padding: 10 }}>
+                    {formResult[frameSelected]?.iconography ||
+                      'No iconography data available.'}
+                  </TText>
+                </TAccordion>
+                <TLine />
+              </>
+            )}
+            {formPayload?.userPerspective && (
+              <>
+                <TAccordion title="User Perspective" rightIcon={'arrow'}>
+                  <TText style={{ padding: 10 }}>
+                    {formResult[frameSelected]?.userPerspective}
+                  </TText>
+                </TAccordion>
+                <TLine />
+              </>
+            )}
+            {formPayload?.categories.uxWriting && (
+              <>
+                <TAccordion title="UX writing" rightIcon={'arrow'}>
+                  <TText style={{ padding: 10 }}>
+                    {formResult[frameSelected]?.uxWriting.comment}
+                    {/* each line map suggestions */}
+                    <TText
+                      fontweight="medium"
+                      fontsize="md"
+                      style={{
+                        marginVertical: 20,
+                      }}
+                    >
+                      {/* next line */}
+                      {'\n'}
+                      {'\n'}
+                      Suggestions:
+                    </TText>
+                    {formResult[frameSelected]?.uxWriting?.suggestions.map(
+                      (item: string, index: number) => (
+                        <TText
+                          key={index}
+                          style={{ padding: 10, color: 'text2' }}
+                        >
+                          {'\n'}
+                          {item}
+                        </TText>
+                      )
+                    )}
+                  </TText>
+                </TAccordion>
+              </>
+            )}
           </ScrollView>
           {/* footer */}
           <View
@@ -245,7 +335,7 @@ const Details = () => {
               style={{ flex: 1 }}
               contentContainerStyle={{ alignItems: 'center' }}
             >
-              {[...Array(6).keys()].map((index) => (
+              {formPayload?.images?.map((item, index) => (
                 <TouchableOpacity
                   key={index}
                   activeOpacity={0.7}
@@ -263,7 +353,8 @@ const Details = () => {
                     }}
                   >
                     <Image
-                      source={images.img10}
+                      source={{ uri: item.uri as any }}
+                      resizeMode="cover"
                       style={{ width: 48, height: 48, borderRadius: 10 }}
                     />
                   </TView>
@@ -271,7 +362,12 @@ const Details = () => {
               ))}
             </ScrollView>
             <TButton
-              title={frameSelected === 5 ? 'Start Over' : 'next frame'}
+              title={
+                formPayload?.images?.length &&
+                frameSelected === formPayload?.images?.length - 1
+                  ? 'Start Over'
+                  : 'next frame'
+              }
               size="md"
               style={{
                 marginLeft: 10,
@@ -284,6 +380,15 @@ const Details = () => {
                   <IconArrow />
                 </View>
               }
+              onPress={() => {
+                if (formPayload?.images?.length) {
+                  if (frameSelected === formPayload?.images?.length - 1) {
+                    setModal(true);
+                  } else {
+                    setFrameSelected((value) => value + 1);
+                  }
+                }
+              }}
             />
           </View>
         </View>
@@ -305,14 +410,7 @@ const Details = () => {
 };
 
 // define your styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#2c3e50',
-  },
-});
+const styles = StyleSheet.create({});
 
 //make this component available to the app
 export default Details;

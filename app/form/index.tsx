@@ -17,6 +17,7 @@ import TBottomSheetModal from '@/components/common/TBottomSheetModal';
 import { formPayloadType } from '@/constants/Global';
 import { useDispatch } from 'react-redux';
 import { saveFormPayload } from '@/store/slices/GlobalSlice';
+import * as FileSystem from 'expo-file-system';
 
 export default function FormPage() {
   const [images, setImages] = React.useState<
@@ -83,11 +84,28 @@ export default function FormPage() {
       [key]: value,
     }));
   };
-
+  async function uriToBase64(uri: string): Promise<string> {
+    return await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
+  }
   // Submit handler
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const base64Images = await Promise.all(
+      images.map(async (img) => ({
+        uri: img.uri,
+        mimeType: img.mimeType,
+        data: await uriToBase64(img.uri), // Properly awaited
+      }))
+    );
+    console.log(typeof base64Images[0].data);
     const payload: formPayloadType = {
-      images: images,
+      // images: images,
+      // add base64 images
+      // images: images.map((img) => ({
+      //   uri: img.uri,
+      //   mimeType: img.mimeType,
+      //   data: uriToBase64(img.uri) as any, // Convert URI to base64
+      // })),
+      images: base64Images,
       categories: !racSwitch
         ? {
             typography: true,
@@ -103,11 +121,12 @@ export default function FormPage() {
       deviceTarget: selectedValue as 'Mobile' | 'PC',
       description,
     };
-    console.log('Form Payload:', payload);
+    // console.log('Form Payload:', payload);
     dispatch(saveFormPayload(payload));
 
     // Navigate to result page
     router.push('/result');
+    // router.replace('/result/details');
   };
 
   const handleReset = () => {

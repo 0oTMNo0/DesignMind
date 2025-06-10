@@ -18,8 +18,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store'; // adjust the path if your store is elsewhere
 import { useDispatch } from 'react-redux';
 import { saveFormResult } from '@/store/slices/GlobalSlice';
-import { usePostImageUnderstandingMutation } from '@/services/GeminiApi';
-import * as FileSystem from 'expo-file-system';
 import { GeminiPrompt, generationConfig, TestData64 } from '@/constants/Global';
 import { GenerateContentParameters, GoogleGenAI } from '@google/genai';
 
@@ -31,6 +29,7 @@ const PULSE_SIZE = 200; // circle diameter
 
 const LoadingPage = () => {
   const [showError, setShowError] = React.useState(false);
+  const [callAPI, setCallAPI] = React.useState(0);
   const ai = new GoogleGenAI({
     apiKey: 'AIzaSyBFihUKfUuT4KIUTJ0m60mm9vjnOn9oiYc',
   });
@@ -41,26 +40,22 @@ const LoadingPage = () => {
   const prepareAndSend = async () => {
     // Convert image URIs to base64 and build the Gemini parts
     if (!formPayload) return;
-    const imagesBase64 = await Promise.all(
-      formPayload.images.map(async (img: { uri: string; mimeType: string }) => {
+    const imagesBase64 = formPayload.images.map(
+      (img: { uri: string; mimeType: string; data: string }, index: number) => {
+        console.log('Processing image:', img.data.length, img.mimeType);
         return {
           mimeType: img.mimeType,
-          data: await uriToBase64(img.uri),
-          // data: TestData64,
-          // data: Buffer.from(imageArrayBuffer).toString('base64'),
+          data: img.data, // Assuming img.data is already a base64 string
         };
-      })
+      }
     );
-
     // Build Gemini API body
     const parts = [
       { text: GeminiPrompt },
       ...imagesBase64.map((img: any) => ({
         inlineData: {
           mimeType: img.mimeType,
-          // mimeType: 'image/png',
           data: img.data,
-          // data: 'test',
         },
       })),
     ];
@@ -69,7 +64,6 @@ const LoadingPage = () => {
       contents: [{ parts }],
       generationConfig: generationConfig,
     };
-    // return body as res
 
     return body;
   };
@@ -77,7 +71,6 @@ const LoadingPage = () => {
   React.useEffect(() => {
     if (formPayload) {
       prepareAndSend().then(async (body: any) => {
-        console.log('Prepared body for Gemini API:', body.contents[0]?.parts);
         const response = await ai.models
           .generateContent({
             model: 'gemini-2.0-flash',
@@ -100,21 +93,7 @@ const LoadingPage = () => {
           });
       });
     }
-  }, [formPayload]);
-
-  async function uriToBase64(uri: string): Promise<string> {
-    return await FileSystem.readAsStringAsync(uri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-  }
-
-  function getMimeTypeFromUri(uri: string): string {
-    if (uri.endsWith('.png')) return 'image/png';
-    if (uri.endsWith('.jpg') || uri.endsWith('.jpeg')) return 'image/jpeg';
-    if (uri.endsWith('.webp')) return 'image/webp';
-    // add more as needed
-    return 'application/octet-stream'; // fallback
-  }
+  }, [formPayload, callAPI]);
 
   return (
     <TSafeAreaView>
@@ -170,7 +149,8 @@ const LoadingPage = () => {
                 setShowError(false);
                 // Re-trigger the mutation
                 // Optionally, call the mutation again as in Step 4
-                prepareAndSend(); // Now this will actually retry
+                // prepareAndSend(); // Now this will actually retry
+                setCallAPI((prev) => prev + 1);
               }}
             >
               <IconReset size={40} />

@@ -9,6 +9,7 @@ import { IFontSize } from '@/constants/Typography';
 interface TTageType {
   title: string;
   size?: IFontSize;
+  disabled?: boolean;
 }
 
 // create a component
@@ -18,16 +19,19 @@ const TTage = (props: TTageType) => {
     <TView
       style={{
         padding: 5,
-        backgroundColor: 'primary',
+        backgroundColor: props.disabled ? 'background2' : 'primary',
         borderRadius: 5,
       }}
     >
-      <TText fontsize={props.size || 'sm'}>{props.title}</TText>
+      <TText
+        fontsize={props.size || 'sm'}
+        color={props.disabled ? 'text2' : 'text1'}
+      >
+        {props.title}
+      </TText>
     </TView>
   );
 };
-
-// define your styles
 
 //make this component available to the app
 export default TTage;

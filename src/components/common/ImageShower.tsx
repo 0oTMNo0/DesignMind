@@ -4,6 +4,7 @@ import {
   Canvas,
   DiffRect,
   Image as SkiaImage,
+  Skia,
   LinearGradient,
   rect,
   rrect,
@@ -17,8 +18,6 @@ import {
 import React from 'react';
 import { View } from 'react-native';
 
-const WIDTH = 183;
-const HEIGHT = 390;
 const BORDER = 5;
 const OUTER_RADIUS = 15;
 const INNER_RADIUS = 10;
@@ -31,15 +30,39 @@ const GRAYSCALE_MATRIX = [
 
 interface imageShowerProps {
   mode: 'eye' | 'hand' | 'layout' | 'none';
+  data: string;
   eyePointList: {
     x: number;
     y: number;
-    size: 'lg' | 'md' | 'sm';
+    size: 'LG' | 'MD' | 'SM';
   }[];
+  deviceTarget: 'Mobile' | 'PC'; // if you want to pass device target
+  // uri: string; // Optional, if you want to pass a URI instead of base64 data
 }
 
 const ImageShower = (props: imageShowerProps) => {
-  const image = useImage(images.img12);
+  const WIDTH = props.deviceTarget === 'Mobile' ? 183 : 400; // Adjust width based on device target
+  const HEIGHT = props.deviceTarget === 'Mobile' ? 390 : 250; // Adjust height based on device target
+  const [image, setImage] = React.useState<any>();
+
+  React.useEffect(() => {
+    const loadImage = async () => {
+      try {
+        const img = Skia.Image.MakeImageFromEncoded(
+          Skia.Data.fromBase64(props.data)
+        );
+        setImage(img);
+      } catch (error) {
+        console.error('Error loading image:', error);
+      }
+    };
+    loadImage();
+  }, [props.data]);
+  // load image uri and transform to somthing that Skia can use
+  // const image = Skia.Image.MakeImageFromEncoded(
+  //   Skia.Data.fromBytes(props.uri as any)
+  // ) as any;
+
   const imageHandZone = useImage(images.imageHandZone);
   const { selectedTheme } = React.useContext(ThemeContext) as ThemeContextType;
   // const [isBW, setIsBW] = React.useState(true);
@@ -52,9 +75,9 @@ const ImageShower = (props: imageShowerProps) => {
   );
 
   const eyePointSize = {
-    lg: 250,
-    md: 100,
-    sm: 50,
+    LG: 250,
+    MD: 100,
+    SM: 50,
   };
 
   return (
