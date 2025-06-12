@@ -19,7 +19,7 @@ const palette = {
   error: '#B3261E',
   confirm: '#1FBC61',
   warning: '#FFA500',
-  link: '#0000FF',
+  link: '#4DA6FF',
 };
 
 export const lightTheme: ThemeType = {

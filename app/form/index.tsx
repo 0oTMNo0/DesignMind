@@ -167,7 +167,12 @@ export default function FormPage() {
             >
               <IconReset />
             </TouchableOpacity>
-            <IconInfo />
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => router.push('/about')}
+            >
+              <IconInfo />
+            </TouchableOpacity>
           </View>
         </View>
         {/* form */}
