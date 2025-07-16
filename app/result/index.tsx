@@ -19,7 +19,12 @@ import { RootState } from '@/store/store'; // adjust the path if your store is e
 import { useDispatch } from 'react-redux';
 import { saveFormResult } from '@/store/slices/GlobalSlice';
 import { GeminiPrompt, generationConfig, TestData64 } from '@/constants/Global';
-import { GenerateContentParameters, GoogleGenAI } from '@google/genai';
+import {
+  createUserContent,
+  GenerateContentParameters,
+  GoogleGenAI,
+} from '@google/genai';
+import { usePostImageUnderstandingMutation } from '@/services/GeminiApi';
 
 const PULSE_COUNT = 3;
 const PULSE_DURATION = 1800; // ms
@@ -31,8 +36,12 @@ const LoadingPage = () => {
   const [showError, setShowError] = React.useState(false);
   const [callAPI, setCallAPI] = React.useState(0);
   const ai = new GoogleGenAI({
-    apiKey: 'AIzaSyBFihUKfUuT4KIUTJ0m60mm9vjnOn9oiYc',
+    apiKey: 'AIzaSyDXqubZMqcFOufDKIGAk_GeKqW2Lj-jZWg',
   });
+
+  // call usePostImageUnderstandingMutation from GeminiApi.ts
+  const [postImageUnderstanding, { isLoading, isSuccess, isError }] =
+    usePostImageUnderstandingMutation();
 
   const dispatch = useDispatch();
   const formPayload = useSelector((state: RootState) => state.global.payload);
@@ -46,6 +55,7 @@ const LoadingPage = () => {
         return {
           mimeType: img.mimeType,
           data: img.data, // Assuming img.data is already a base64 string
+          // data: TestData64[0].data, // Assuming img.data is already a base64 string
         };
       }
     );
@@ -60,8 +70,19 @@ const LoadingPage = () => {
       })),
     ];
 
+    const parts2 = createUserContent([
+      GeminiPrompt,
+      ...imagesBase64.map((img: any) => ({
+        inlineData: {
+          mimeType: img.mimeType,
+          data: img.data,
+        },
+      })),
+    ]);
+
     const body = {
       contents: [{ parts }],
+      // contents: parts2,
       generationConfig: generationConfig,
     };
 
@@ -71,26 +92,54 @@ const LoadingPage = () => {
   React.useEffect(() => {
     if (formPayload) {
       prepareAndSend().then(async (body: any) => {
-        const response = await ai.models
-          .generateContent({
-            model: 'gemini-2.0-flash',
-            contents: body.contents, // GeminiPrompt,
-            config: body.generationConfig,
-          } as GenerateContentParameters)
-          .then((res: any) => {
+        console.log(
+          'Prepared body to json and log for Gemini API:',
+          JSON.stringify(body, null, 2)
+        );
+        // try to replace the postImageUnderstanding with ai.models.generateContent
+        const response = await postImageUnderstanding({ body })
+          .unwrap()
+          .then((res) => {
             console.log('Response from Gemini API:', res);
-            const rawText = res.candidates[0].content.parts[0].text;
-            const parsedData = JSON.parse(rawText); // Convert to JSON
+            if (res.candidates) {
+              const rawText = res.candidates[0].content.parts[0].text;
+              const parsedData = JSON.parse(rawText); // Convert to JSON
 
-            dispatch(saveFormResult(parsedData));
-            router.replace('/result/details');
+              dispatch(saveFormResult(parsedData));
+              router.replace('/result/details');
+            } else {
+              console.error('No data in response:', res);
+              setShowError(true);
+            }
           })
           .catch((err) => {
             console.error('Error calling Gemini API:', err);
+            setShowError(true);
           })
           .finally(() => {
-            setShowError(true);
+            // setShowError(true); // This will show the error state
           });
+        // console.log('Response from Gemini API:', response);
+        // const response = await ai.models
+        //   .generateContent({
+        //     model: 'gemini-2.5-flash',
+        //     contents: body.contents, // GeminiPrompt,
+        //     config: body.generationConfig,
+        //   } as GenerateContentParameters)
+        //   .then((res: any) => {
+        //     console.log('Response from Gemini API:', res);
+        //     const rawText = res.candidates[0].content.parts[0].text;
+        //     const parsedData = JSON.parse(rawText); // Convert to JSON
+
+        //     dispatch(saveFormResult(parsedData));
+        //     router.replace('/result/details');
+        //   })
+        //   .catch((err) => {
+        //     console.error('Error calling Gemini API:', err);
+        //   })
+        //   .finally(() => {
+        //     setShowError(true);
+        //   });
       });
     }
   }, [formPayload, callAPI]);

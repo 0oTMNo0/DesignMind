@@ -22,12 +22,13 @@ const TBoxImage = (props: TBoxImageProps) => {
       mediaTypes: ['images'],
       // allowsEditing: true,
       quality: 1,
-      // base64: false,
+      base64: true,
     });
-    console.log('ImagePicker result:', result);
+    // console.log('ImagePicker result:', result);
     if (!result.canceled && result.assets && result.assets[0].uri) {
       const uri = result.assets[0].uri;
       const mimeType = result.assets[0].mimeType;
+      // console.log(result.assets[0].base64);
       // setImageUri(uri);
       props.onImageSelected && props.onImageSelected(uri, mimeType);
     }

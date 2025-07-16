@@ -14,7 +14,7 @@ import TButton from '@/components/common/TButton';
 import TCheckbox from '@/components/common/TCheckbox';
 import { useRouter } from 'expo-router';
 import TBottomSheetModal from '@/components/common/TBottomSheetModal';
-import { formPayloadType, TestData64 } from '@/constants/Global';
+import { formPayloadType } from '@/constants/Global';
 import { useDispatch } from 'react-redux';
 import { saveFormPayload } from '@/store/slices/GlobalSlice';
 import * as FileSystem from 'expo-file-system';
@@ -113,12 +113,11 @@ export default function FormPage() {
       deviceTarget: selectedValue as 'Mobile' | 'PC',
       description,
     };
-    // console.log('Form Payload:', payload);
+
     dispatch(saveFormPayload(payload));
 
     // Navigate to result page
     router.push('/result');
-    // router.replace('/result/details');
   };
 
   const handleReset = () => {

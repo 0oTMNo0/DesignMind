@@ -1,3 +1,4 @@
+import { Type } from '@google/genai';
 import { AxiosPromise } from 'axios';
 import { Dimensions } from 'react-native';
 
@@ -99,54 +100,58 @@ export interface GeminiFrameAnalysis {
 export type GeminiAnalysisResult = GeminiFrameAnalysis[];
 
 export const GeminiPrompt = `You are an expert UI/UX reviewer. For each attached UI frame, provide detailed analysis for:
-- Colour and emotion: Comment on how the palette affects user emotion.
+- Colour and emotion: Comment on how the palette affects user emotion and give a score out of 100 (higher = better use of colour and emotional impact).
 - Eye tracking: Estimate at least three most salient points (order of attention, with x, y, size label: 'LG', 'MD', 'SM'). Also remember the mobile will show in this size ( width: 183px, height: 390px) and PC (width: 400px, height: 250px) so adjust the coordinates accordingly.
-- Iconography: Comment on icons’ clarity and appropriateness.
-- Typography: Assess font choices and readability.
-- UX writing: Brief feedback and improvement suggestions.
+- Iconography: Comment on icons’ clarity and appropriateness and give a score out of 100.
+- Typography: Assess font choices and readability and give a score out of 100.
+- UX writing: Brief feedback and improvement suggestions and give a score out of 100.
 - Similarity: Indicate if font, icon, colour, or semantic category match other frames.
-- User perspective: Briefly summarise user impression.
+- User perspective: Briefly summarise user impression and give a score out of 100.
 Take into account the device target ({{deviceTarget}}) and frame description ({{description}}). The selected review categories are: {{categories where value is true}}.`;
 
 export const generationConfig = {
   responseMimeType: 'application/json',
   responseSchema: {
-    type: 'ARRAY',
+    type: Type.ARRAY,
     items: {
-      type: 'OBJECT',
+      type: Type.OBJECT,
       properties: {
-        frameIndex: { type: 'NUMBER' },
-        colorAndEmotion: { type: 'STRING' },
+        frameIndex: { type: Type.NUMBER },
+        colorAndEmotion: { type: Type.STRING },
+        colorAndEmotionScore: { type: Type.NUMBER },
         eyesTracking: {
-          type: 'ARRAY',
+          type: Type.ARRAY,
           items: {
-            type: 'OBJECT',
+            type: Type.OBJECT,
             properties: {
-              x: { type: 'NUMBER' },
-              y: { type: 'NUMBER' },
-              size: { type: 'STRING', enum: ['LG', 'MD', 'SM'] },
+              x: { type: Type.NUMBER },
+              y: { type: Type.NUMBER },
+              size: { type: Type.STRING, enum: ['LG', 'MD', 'SM'] },
             },
           },
         },
-        iconography: { type: 'STRING' },
-        typography: { type: 'STRING' },
+        iconography: { type: Type.STRING },
+        iconographyScore: { type: Type.NUMBER },
+        typography: { type: Type.STRING },
+        typographyScore: { type: Type.NUMBER },
         uxWriting: {
-          type: 'OBJECT',
+          type: Type.OBJECT,
           properties: {
-            comment: { type: 'STRING' },
-            suggestions: { type: 'ARRAY', items: { type: 'STRING' } },
+            comment: { type: Type.STRING },
+            suggestions: { type: Type.ARRAY, items: { type: Type.STRING } },
           },
         },
         similarity: {
-          type: 'OBJECT',
+          type: Type.OBJECT,
           properties: {
-            font: { type: 'BOOLEAN' },
-            icon: { type: 'BOOLEAN' },
-            color: { type: 'BOOLEAN' },
-            semanticCategory: { type: 'BOOLEAN' },
+            font: { type: Type.BOOLEAN },
+            icon: { type: Type.BOOLEAN },
+            color: { type: Type.BOOLEAN },
+            semanticCategory: { type: Type.BOOLEAN },
           },
         },
-        userPerspective: { type: 'STRING' },
+        userPerspective: { type: Type.STRING },
+        userPerspectiveScore: { type: Type.NUMBER },
       },
       required: [
         'frameIndex',
@@ -157,16 +162,24 @@ export const generationConfig = {
         'uxWriting',
         'similarity',
         'userPerspective',
+        'colorAndEmotionScore',
+        'iconographyScore',
+        'typographyScore',
+        'userPerspectiveScore',
       ],
       propertyOrdering: [
         'frameIndex',
         'colorAndEmotion',
+        'colorAndEmotionScore',
         'eyesTracking',
         'iconography',
+        'iconographyScore',
         'typography',
+        'typographyScore',
         'uxWriting',
         'similarity',
         'userPerspective',
+        'userPerspectiveScore',
       ],
     },
   },

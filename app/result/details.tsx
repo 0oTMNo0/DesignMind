@@ -18,7 +18,6 @@ import TSafeAreaView from '@/components/common/TSafeView';
 import TTage from '@/components/common/TTage';
 import TText from '@/components/common/TText';
 import TView from '@/components/common/TView';
-import { TestData64 } from '@/constants/Global';
 import { clearFormPayload } from '@/store/slices/GlobalSlice';
 import { RootState } from '@/store/store';
 import { router } from 'expo-router';
@@ -31,6 +30,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import TProgress from '@/components/common/TProgress';
 
 // create a component
 const Details = () => {
@@ -63,18 +63,6 @@ const Details = () => {
     }
   };
 
-  React.useEffect(() => {
-    // console.log('11111111', formPayload);
-    // console.log('222222222', formResult[frameSelected].eyesTracking);
-    // clg the formPayload?.images?.[frameSelected].data keys since it's an object
-    console.log(
-      '222222222 keys',
-      formPayload?.images[0].data.slice(0, 10),
-      TestData64[0].data.slice(0, 10)
-    );
-    // console.log('33333333', formPayload?.images?.[frameSelected].data);
-  }, []);
-
   return (
     <>
       <TSafeAreaView>
@@ -104,7 +92,14 @@ const Details = () => {
             >
               <IconReset />
             </TouchableOpacity>
-            <IconInfo />
+            {/* <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                router.push('/about');
+              }}
+            >
+              <IconInfo />
+            </TouchableOpacity> */}
           </View>
         </View>
         <View
@@ -256,6 +251,12 @@ const Details = () => {
                   <TText style={{ padding: 10 }}>
                     {formResult[frameSelected]?.typography}
                   </TText>
+                  <TProgress
+                    tintColor="primary"
+                    size={100}
+                    width={15}
+                    fill={formResult[frameSelected]?.typographyScore}
+                  />
                 </TAccordion>
                 <TLine />
               </>
@@ -266,6 +267,12 @@ const Details = () => {
                   <TText style={{ padding: 10 }}>
                     {formResult[frameSelected]?.colorAndEmotion}
                   </TText>
+                  <TProgress
+                    size={100}
+                    width={15}
+                    tintColor="primary"
+                    fill={formResult[frameSelected]?.colorAndEmotionScore}
+                  />
                 </TAccordion>
                 <TLine />
               </>
@@ -277,6 +284,12 @@ const Details = () => {
                     {formResult[frameSelected]?.iconography ||
                       'No iconography data available.'}
                   </TText>
+                  <TProgress
+                    size={100}
+                    width={15}
+                    tintColor="primary"
+                    fill={formResult[frameSelected]?.iconographyScore}
+                  />
                 </TAccordion>
                 <TLine />
               </>
@@ -287,6 +300,12 @@ const Details = () => {
                   <TText style={{ padding: 10 }}>
                     {formResult[frameSelected]?.userPerspective}
                   </TText>
+                  <TProgress
+                    size={100}
+                    tintColor="primary"
+                    width={15}
+                    fill={formResult[frameSelected]?.userPerspectiveScore}
+                  />
                 </TAccordion>
                 <TLine />
               </>
